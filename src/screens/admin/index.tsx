@@ -1,26 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, FlatList, Alert } from 'react-native';
 import tw from 'twrnc';
-import { store, PRIZES_TABLE } from '../config/store';
+import { store, PRIZES_TABLE } from '../../config/store';
 
 import { CircleDashed, CircleCheck } from "lucide-react-native";
-import { Button } from '../components/buttom/Buttom';
+import { Button } from '../../components/buttom/Buttom';
+import { Prize } from '../../types/Prizes';
 
 
 
 
 // 🎯 Interface para o prêmio
-interface Prize {
-  name: string;
-  prizeReal:string
-  color: string;
-  probability: number;
-  quant: number
-  isPrize: boolean
-  order: number
-}
 
-const Admin = () => {
+
+export function Admin (){
   const [loadingDownload, setLoadingDownload] = useState(false)
   const [name, setName] = useState('');
   const [prizeReal, setPrizeReal] = useState('');
@@ -103,7 +96,9 @@ const Admin = () => {
             quant: data[i].quant,
             isPrize: data[i].isPrize,
             prizeReal: data[i].prizeReal,
-            order: data[i].order
+            order: data[i].order,
+            message: data[i].message,
+            title: data[i].title
           })
         }
         setLoadingDownload(false)
@@ -211,4 +206,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+ ;

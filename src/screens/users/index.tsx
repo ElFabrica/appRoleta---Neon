@@ -1,8 +1,8 @@
 import { View, Text, Pressable, Alert, TextInput, Modal,FlatList, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import tw from 'twrnc';
-import { store, USERS_TABLE, initializeStore, clearTable } from "../config/store";
-import { Input } from '../components/input/Input';
+import { store, USERS_TABLE, initializeStore, clearTable } from "../../config/store";
+import { Input } from '../../components/input/Input';
 
 
 interface User {
@@ -13,7 +13,7 @@ interface User {
   nota:string
 }
 
-const Users: React.FC = () => {
+export function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
@@ -229,4 +229,3 @@ const Users: React.FC = () => {
   );
 }
 
-export default Users

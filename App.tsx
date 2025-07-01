@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, Alert } from 'react-native';
 import tw from 'twrnc'; // Se estiver usando Tailwind RN CLI
 
-import AppNavigator from './src/navigation/appNavigation'; // Ajuste o caminho para o seu AppNavigator
+import {StackRoutesList, StacksRoutes} from './src/Routes/StackRoutes'; // Ajuste o caminho para o seu AppNavigator
 import { initializeStore } from './src/config/store';   // Ajuste o caminho para sua config da store
 
 const App = () => {
@@ -53,7 +53,7 @@ const App = () => {
   }
 
   // Uma vez que a store está pronta e não há erros, renderize o AppNavigator
-  return <AppNavigator />;
+  return <StacksRoutes/>;
 };
 
 export default App;
