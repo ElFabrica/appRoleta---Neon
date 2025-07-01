@@ -4,10 +4,9 @@ import { RFValue } from "react-native-responsive-fontsize";
 export const styles = StyleSheet.create({
   Container: {
     width: '100%',
-    gap: 30,
-    justifyContent: "center",
+    gap: 16,
+    marginTop: RFValue(40),
     alignContent: "center",
-    alignItems: "center",
     flex: 1,
   },
       backgound: {
@@ -30,7 +29,7 @@ export const styles = StyleSheet.create({
   subContainer: {
     justifyContent: "center",
     borderRadius: 10,
-    padding: 24,
+    padding: 16,
     alignItems: "center",
     width: "100%",
   },
@@ -41,7 +40,7 @@ export const styles = StyleSheet.create({
   wheelContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: RFValue(20),
   },
   pointer: {
     position: "absolute",

@@ -189,7 +189,7 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
                         x={x}
                         y={y}
                         fill="#fff"
-                        fontSize={RFValue(16)}
+                        fontSize={RFValue(22)}
                         fontWeight="bold"
                         textAnchor="middle"
                         alignmentBaseline="middle"
