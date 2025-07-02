@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,32 +8,30 @@ import {
   Modal,
   useWindowDimensions,
   Image,
-  ImageBackground
-} from 'react-native';
-import tw from 'twrnc';
-import Svg, { G, Path, Circle, Text as SvgText } from 'react-native-svg';
-import ConfettiCannon from 'react-native-confetti-cannon';
+  ImageBackground,
+} from "react-native";
+import tw from "twrnc";
+import Svg, { G, Path, Circle, Text as SvgText } from "react-native-svg";
+import ConfettiCannon from "react-native-confetti-cannon";
 
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { store, PRIZES_TABLE, updateRow } from '../../config/store';
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { store, PRIZES_TABLE, updateRow } from "../../config/store";
 
-import { styles } from './style';
-import { Button } from '../../components/buttom/Buttom';
+import { styles } from "./style";
+import { Button } from "../../components/buttom/Buttom";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { RootStackParamList } from '../../types/navigation';
-import { Prize } from '../../types/Prizes';
-import { StackRoutesList } from '../../Routes/StackRoutes';
-import { StackRoutesProps } from '../../Routes/StackRoutes';
-
-
+import { RootStackParamList } from "../../types/navigation";
+import { Prize } from "../../types/Prizes";
+import { StackRoutesList } from "../../Routes/StackRoutes";
+import { StackRoutesProps } from "../../Routes/StackRoutes";
 
 // ... (importações permanecem as mesmas)
 
-export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
+export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   const { width } = useWindowDimensions();
 
-  const wheelSize = width * 0.9;
+  const wheelSize = width * 0.7;
   const radius = wheelSize / 2;
   const center = radius;
 
@@ -60,13 +58,12 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
           prizeReal: value.prizeReal,
           order: value.order,
           title: value.title,
-          message: value.message
-
+          message: value.message,
         }))
         .filter((prize) => prize.quant > 0);
 
       setPrizes(data);
-      console.log('Prêmios carregados:', data);
+      console.log("Prêmios carregados:", data);
     };
 
     load();
@@ -121,7 +118,7 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
 
   const rotate = rotation.interpolate({
     inputRange: [-360, 0],
-    outputRange: ['-360deg', '0deg'],
+    outputRange: ["-360deg", "0deg"],
   });
 
   const polarToCartesian = (
@@ -150,8 +147,8 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
       `M ${center} ${center}`,
       `L ${start.x} ${start.y}`,
       `A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`,
-      'Z',
-    ].join(' ');
+      "Z",
+    ].join(" ");
   };
 
   const getTextPosition = (index: number) => {
@@ -173,39 +170,41 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
           <Animated.View style={{ transform: [{ rotate }] }}>
             <Svg width={wheelSize} height={wheelSize}>
               <G>
-                {prizes.sort((a, b) => a.order - b.order).map((item, index) => {
-                  const { x, y, angle } = getTextPosition(index);
-                  const textAngle = angle + 0;
+                {prizes
+                  .sort((a, b) => a.order - b.order)
+                  .map((item, index) => {
+                    const { x, y, angle } = getTextPosition(index);
+                    const textAngle = angle + 0;
 
-                  return (
-                    <G key={index}>
-                      <Path
-                        d={createArc(index)}
-                        fill={item.color || '#333'}
-                        stroke="#fff"
-                        strokeWidth={2}
-                      />
-                      <SvgText
-                        x={x}
-                        y={y}
-                        fill="#fff"
-                        fontSize={RFValue(22)}
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        alignmentBaseline="middle"
-                        transform={`rotate(${textAngle} ${x} ${y})`}
-                      >
-                        {item.name}
-                      </SvgText>
-                    </G>
-                  );
-                })}
+                    return (
+                      <G key={index}>
+                        <Path
+                          d={createArc(index)}
+                          fill={item.color || "#333"}
+                          stroke="#fff"
+                          strokeWidth={2}
+                        />
+                        <SvgText
+                          x={x}
+                          y={y}
+                          fill="#fff"
+                          fontSize={RFValue(22)}
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          alignmentBaseline="middle"
+                          transform={`rotate(${textAngle} ${x} ${y})`}
+                        >
+                          {item.name}
+                        </SvgText>
+                      </G>
+                    );
+                  })}
 
                 <Circle
                   cx={center}
                   cy={center}
                   r={wheelSize * 0.12}
-                  fill={isSpinning ? '#ccc' : '#fff'}
+                  fill={isSpinning ? "#ccc" : "#fff"}
                   stroke="#ccc"
                   strokeWidth={2}
                 />
@@ -218,14 +217,17 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
           <Pressable
             onPress={spin}
             disabled={isSpinning}
-            style={[styles.spinButton, {
-              width: wheelSize * 0.24,
-              height: wheelSize * 0.24,
-              borderRadius: (wheelSize * 0.24) / 2,
-            }]}
+            style={[
+              styles.spinButton,
+              {
+                width: wheelSize * 0.24,
+                height: wheelSize * 0.24,
+                borderRadius: (wheelSize * 0.24) / 2,
+              },
+            ]}
           >
             <Text style={styles.spinButtonText}>
-              {isSpinning ? '' : 'Girar'}
+              {isSpinning ? "" : "Girar"}
             </Text>
           </Pressable>
         </View>
@@ -233,7 +235,7 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
         <View style={styles.subContainer}>
           <Button
             size={24}
-            title={isSpinning ? 'Girando...' : 'Girar Roleta'}
+            title={isSpinning ? "Girando..." : "Girar Roleta"}
             onPress={spin}
             disabled={isSpinning}
           />
@@ -258,15 +260,9 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
             )}
 
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                🎉 Parabéns!
-              </Text>
-              <Text style={styles.modalTitle}>
-                {result?.title}
-              </Text>
-               <Text style={styles.modalMessage}>
-                {result?.message}
-              </Text>
+              <Text style={styles.modalTitle}>🎉 Parabéns!</Text>
+              <Text style={styles.modalTitle}>{result?.title}</Text>
+              <Text style={styles.modalMessage}>{result?.message}</Text>
 
               <Pressable
                 style={styles.modalButton}
@@ -277,12 +273,10 @@ export function Roullete( {navigation}:StackRoutesProps<"roullete">) {
                       quant: result.quant - 1,
                     });
                   }
-                  navigation.navigate('home');
+                  navigation.navigate("home");
                 }}
               >
-                <Text style={styles.modalButtonText}>
-                  Concluir
-                </Text>
+                <Text style={styles.modalButtonText}>Concluir</Text>
               </Pressable>
             </View>
           </View>
