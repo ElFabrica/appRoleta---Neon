@@ -5,8 +5,8 @@ export const styles = StyleSheet.create({
       wrapper: {
   },
     image: {
-    width: RFValue(45),  
-    height: RFValue(30),  
+    width: RFValue(80),  
+    height: RFValue(25),  
     position:"absolute",
     top:RFValue(5),
     right:RFValue(10),

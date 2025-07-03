@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     paddingTop: RFValue(26),
-    paddingHorizontal: RFValue(16),
+    paddingHorizontal: RFValue(10),
     justifyContent: "space-between",
     alignItems: "center",
     alignContent: "center",

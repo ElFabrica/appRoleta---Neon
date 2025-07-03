@@ -12,7 +12,7 @@ export function LogoAbsolut({ ...rest}: Props) {
 
     return(
             <View style={styles.wrapper}>
-       <Image source={require("../../assets/LOGO_ACT.png")}
+       <Image source={require("../../assets/logo_nasa_letras_pretas.png")}
        style={styles.image}/>
         </View>
     )

@@ -8,9 +8,9 @@ import { RootStackParamList } from "../../types/navigation";
 
 import { Button } from "../../components/buttom/Buttom";
 import { styles } from "./style";
-import { Logo } from "../../components/logo";
 import { StackRoutesList } from "../../Routes/StackRoutes";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
+import { Logo } from "../../components/logo/Logo";
 
 // 🔗 Tipagem das rotas
 
@@ -85,7 +85,9 @@ export function Home({ navigation }:StackRoutesProps<"home"> ) {
               </Pressable>
             </View>
           )}
+        <Logo/>  
         </View>
+        
       <View style={styles.container}>
         
         {/* Conteúdo principal */}

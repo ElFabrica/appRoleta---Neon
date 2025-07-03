@@ -24,6 +24,7 @@ import { Button } from "../../components/buttom/Buttom";
 import { Input } from "../../components/input/Input";
 import { styles } from "./style";
 import { RootStackParamList } from "../../types/navigation";
+import { LogoAbsolut } from "../../components/LogoAbsolut";
 
 
 
@@ -74,6 +75,7 @@ export function Form ({ navigation }: StackRoutesProps<"form">) {
              style={styles.backgound}
              resizeMode="cover"
        >
+        <LogoAbsolut/>
       <ScrollView keyboardShouldPersistTaps="handled">
         <Text style={styles.Title}>Cadastro</Text>
 

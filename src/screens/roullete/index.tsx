@@ -25,6 +25,7 @@ import { RootStackParamList } from "../../types/navigation";
 import { Prize } from "../../types/Prizes";
 import { StackRoutesList } from "../../Routes/StackRoutes";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
+import { LogoAbsolut } from "../../components/LogoAbsolut";
 
 // ... (importações permanecem as mesmas)
 
@@ -164,6 +165,7 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
       resizeMode="cover"
     >
       <View style={styles.Container}>
+        <LogoAbsolut/>
         <Text style={styles.Title}>Girou Ganhou</Text>
 
         <View style={styles.wheelContainer}>

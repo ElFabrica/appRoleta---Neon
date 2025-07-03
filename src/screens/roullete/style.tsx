@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    paddingHorizontal: RFValue(16),
+    
   },
   wheelContainer: {
     justifyContent: "center",
@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
   },
     modalMessage: {
     fontSize: RFValue(16),
-    fontWeight: 'bold',
+    fontWeight: "600",
     marginBottom: 24,
     textAlign:"center"
   },
