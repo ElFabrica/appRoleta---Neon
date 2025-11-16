@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { RFValue } from "react-native-responsive-fontsize";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems:"center",
-    width:"100%",
-    marginTop:RFValue(60)
+    alignItems: "center",
+    width: "100%",
+    marginTop: RFValue(60),
   },
   lottie: {
     width: RFValue(200),
@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   subContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: '100%',
+    width: "100%",
     height: 100,
     marginBottom: 24,
   },
@@ -22,19 +22,21 @@ export const styles = StyleSheet.create({
   Title: {
     fontSize: RFValue(36),
     fontWeight: "700",
-    color: "#F81FB4",
+    color: "#8E483E",
     fontFamily: "Nunito_400Regular",
     textAlign: "center",
   },
-  subTitile: {
-    fontSize: RFValue(26),
-    fontWeight: "800",
-    color: "#F81FB4",
+  Subtitle: {
+    fontSize: RFValue(16),
+    fontWeight: "400",
+    color: "#8E483E",
+    textAlign: "center",
   },
-  textInstructions: {
-    fontSize: RFValue(18),
-    fontWeight: "600",
-    color: "#FFFFFF",
+  SubtitleFooter: {
+    fontSize: RFValue(12),
+    marginTop: RFValue(20),
+    fontWeight: "400",
+    color: "#8E483E",
     textAlign: "center",
   },
   containerInstructions: {
@@ -48,7 +50,7 @@ export const styles = StyleSheet.create({
   },
   containerFooter: {
     justifyContent: "center",
-    alignItems:"center",
+    alignItems: "center",
     width: "100%",
     paddingLeft: 24,
     paddingRight: 24,
@@ -140,6 +142,6 @@ export const styles = StyleSheet.create({
   contentCenter: {
     alignItems: "center",
     justifyContent: "center",
-    width:"100%"
+    width: "100%",
   },
 });

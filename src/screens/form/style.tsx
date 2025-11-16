@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   Title: {
     fontSize: RFValue(32),
     fontWeight: "700",
-    color: "#F81FB4",
+    color: "#8E483E",
     textAlign: "center",
     marginBottom: 16,
   },
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   containerButton: {
     flexDirection: "row",
     justifyContent: "center",
-    width: '100%',
+    width: "100%",
     marginBottom: 24,
   },
   inputContainer: {
@@ -46,41 +46,39 @@ export const styles = StyleSheet.create({
   phoneInput: {
     color: "#333333",
     fontSize: RFValue(16),
-    backgroundColor:"#FFFFFF",
+    backgroundColor: "#FFFFFF",
     fontWeight: "600",
     borderWidth: 2,
     borderRadius: 20,
     padding: 10,
     width: "100%",
     minHeight: 65,
-    borderColor: "#F81FB4",
+    borderColor: "#8E483E",
   },
   logoContainer: {
     alignItems: "center",
     marginTop: 16,
     marginBottom: 24,
   },
-    backgound: {
+  backgound: {
     flex: 1,
-    paddingHorizontal: RFValue(16)
-    },
-    checkboxContainer: {
-  flexDirection: "row",
-  alignItems: "center",
-  gap:8,
-  marginTop:16,
-  alignContent:"center"
-},
-checkboxIcon: {
-  fontSize: RFValue(20),
-  marginRight: 10,
-  marginTop: 2,
-},
-checkboxText: {
-  flex: 1,
-  fontSize: RFValue(14),
-  color: "#333333",
-},
-
-
+    paddingHorizontal: RFValue(16),
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 16,
+    alignContent: "center",
+  },
+  checkboxIcon: {
+    fontSize: RFValue(20),
+    marginRight: 10,
+    marginTop: 2,
+  },
+  checkboxText: {
+    flex: 1,
+    fontSize: RFValue(14),
+    color: "#333333",
+  },
 });

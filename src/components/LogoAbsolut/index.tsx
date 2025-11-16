@@ -1,20 +1,17 @@
-import { useState } from "react";
-import { Image,ImageProps, View } from "react-native";
-import {styles} from "./style"
-import { StyleSheet } from "react-native";
+import { Image, ImageProps, View } from "react-native";
+import { styles } from "./style"
 
 type Props = ImageProps & {
 
 }
 
-export function LogoAbsolut({ ...rest}: Props) {
-      const [isFocused, setIsFocused] = useState(false);
+export function LogoAbsolut({ ...props }: Props) {
 
-    return(
-            <View style={styles.wrapper}>
-       <Image source={require("../../assets/logo_nasa_letras_pretas.png")}
-       style={styles.image}/>
-        </View>
-    )
-    
+  return (
+    <View style={styles.wrapper}>
+      <Image {...props} source={require("../../assets/logo_rv.jpg")}
+        style={styles.image} />
+    </View>
+  )
+
 }

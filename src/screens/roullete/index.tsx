@@ -7,27 +7,18 @@ import {
   Easing,
   Modal,
   useWindowDimensions,
-  Image,
-  ImageBackground,
 } from "react-native";
-import tw from "twrnc";
 import Svg, { G, Path, Circle, Text as SvgText } from "react-native-svg";
 import ConfettiCannon from "react-native-confetti-cannon";
 
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { store, PRIZES_TABLE, updateRow } from "../../config/store";
 
 import { styles } from "./style";
 import { Button } from "../../components/buttom/Buttom";
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { RootStackParamList } from "../../types/navigation";
+import { RFValue } from "react-native-responsive-fontsize";
 import { Prize } from "../../types/Prizes";
-import { StackRoutesList } from "../../Routes/StackRoutes";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
 import { LogoAbsolut } from "../../components/LogoAbsolut";
-
-// ... (importações permanecem as mesmas)
 
 export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   const { width } = useWindowDimensions();
@@ -37,6 +28,19 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   const center = radius;
 
   const rotation = useRef(new Animated.Value(0)).current;
+
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
+
+  // Animações do modal
+  const modalScale = useRef(new Animated.Value(0)).current;
+  const modalOpacity = useRef(new Animated.Value(0)).current;
+  const titleScale = useRef(new Animated.Value(0)).current;
+  const messageOpacity = useRef(new Animated.Value(0)).current;
+  const buttonScale = useRef(new Animated.Value(0)).current;
+
+  // Animação do botão ao pressionar
+  const buttonPressScale = useRef(new Animated.Value(1)).current;
 
   const [prizes, setPrizes] = useState<Prize[]>([]);
   const [result, setResult] = useState<Prize | null>(null);
@@ -73,6 +77,110 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
       store.delListener(listenerId);
     };
   }, []);
+
+  // Animação de entrada do modal
+  useEffect(() => {
+    if (modalVisible) {
+      // Reset das animações
+      modalScale.setValue(0);
+      modalOpacity.setValue(0);
+      titleScale.setValue(0);
+      messageOpacity.setValue(0);
+      buttonScale.setValue(0);
+      buttonPressScale.setValue(1);
+
+      // Sequência de animações
+      Animated.sequence([
+        // 1. Fade in do backdrop
+        Animated.timing(modalOpacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        // 2. Bounce do modal
+        Animated.spring(modalScale, {
+          toValue: 1,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      // 3. Animações em paralelo do conteúdo (com delay)
+      setTimeout(() => {
+        Animated.parallel([
+          Animated.spring(titleScale, {
+            toValue: 1,
+            friction: 6,
+            tension: 40,
+            useNativeDriver: true,
+          }),
+          Animated.timing(messageOpacity, {
+            toValue: 1,
+            duration: 500,
+            delay: 200,
+            useNativeDriver: true,
+          }),
+          Animated.spring(buttonScale, {
+            toValue: 1,
+            friction: 7,
+            tension: 40,
+            delay: 400,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }, 300);
+    }
+  }, [modalVisible]);
+
+  const handlePressIn = () => {
+    Animated.parallel([
+      Animated.timing(scaleAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.parallel([
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  // Animações do botão "Concluir"
+  const handleButtonPressIn = () => {
+    Animated.spring(buttonPressScale, {
+      toValue: 0.92,
+      friction: 6,
+      tension: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleButtonPressOut = () => {
+    Animated.spring(buttonPressScale, {
+      toValue: 1,
+      friction: 6,
+      tension: 100,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const getPrizeByProbability = (): number => {
     const total = prizes.reduce((sum, p) => sum + p.probability, 0);
@@ -114,6 +222,30 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
       }
 
       setIsSpinning(false);
+    });
+  };
+
+  const closeModal = () => {
+    // Animação de saída
+    Animated.parallel([
+      Animated.timing(modalScale, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(modalOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setModalVisible(false);
+      if (result?.isPrize && result.quant > 0) {
+        updateRow(PRIZES_TABLE, result.id, {
+          quant: result.quant - 1,
+        });
+      }
+      navigation.navigate("home");
     });
   };
 
@@ -159,131 +291,172 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/Background_with-logo.png")}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.Container}>
-        <LogoAbsolut/>
-        <Text style={styles.Title}>Girou Ganhou</Text>
+    <View style={styles.Container}>
+      <LogoAbsolut />
+      <Text style={styles.Title}>Girou Ganhou</Text>
 
-        <View style={styles.wheelContainer}>
-          <Animated.View style={{ transform: [{ rotate }] }}>
-            <Svg width={wheelSize} height={wheelSize}>
-              <G>
-                {prizes
-                  .sort((a, b) => a.order - b.order)
-                  .map((item, index) => {
-                    const { x, y, angle } = getTextPosition(index);
-                    const textAngle = angle + 0;
+      <View style={styles.wheelContainer}>
+        <Animated.View style={{ transform: [{ rotate }] }}>
+          <Svg width={wheelSize} height={wheelSize}>
+            <G>
+              {prizes
+                .sort((a, b) => a.order - b.order)
+                .map((item, index) => {
+                  const { x, y, angle } = getTextPosition(index);
+                  const textAngle = angle + 0;
 
-                    return (
-                      <G key={index}>
-                        <Path
-                          d={createArc(index)}
-                          fill={item.color || "#333"}
-                          stroke="#fff"
-                          strokeWidth={2}
-                        />
-                        <SvgText
-                          x={x}
-                          y={y}
-                          fill="#fff"
-                          fontSize={RFValue(22)}
-                          fontWeight="bold"
-                          textAnchor="middle"
-                          alignmentBaseline="middle"
-                          transform={`rotate(${textAngle} ${x} ${y})`}
-                        >
-                          {item.name}
-                        </SvgText>
-                      </G>
-                    );
-                  })}
+                  return (
+                    <G key={index}>
+                      <Path
+                        d={createArc(index)}
+                        fill={item.color || "#333"}
+                        stroke="#fff"
+                        strokeWidth={2}
+                      />
+                      <SvgText
+                        x={x}
+                        y={y}
+                        fill="#fff"
+                        fontSize={RFValue(22)}
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        alignmentBaseline="middle"
+                        transform={`rotate(${textAngle} ${x} ${y})`}
+                      >
+                        {item.name}
+                      </SvgText>
+                    </G>
+                  );
+                })}
 
-                <Circle
-                  cx={center}
-                  cy={center}
-                  r={wheelSize * 0.12}
-                  fill={isSpinning ? "#ccc" : "#fff"}
-                  stroke="#ccc"
-                  strokeWidth={2}
-                />
-              </G>
-            </Svg>
-          </Animated.View>
+              <Circle
+                cx={center}
+                cy={center}
+                r={wheelSize * 0.12}
+                fill={isSpinning ? "#ccc" : "#fff"}
+                stroke="#ccc"
+                strokeWidth={2}
+              />
+            </G>
+          </Svg>
+        </Animated.View>
 
-          <View style={styles.pointer} />
+        <View style={styles.pointer} />
 
-          <Pressable
-            onPress={spin}
-            disabled={isSpinning}
+        <Pressable
+          onPress={spin}
+          disabled={isSpinning}
+          style={[
+            styles.spinButton,
+            {
+              width: wheelSize * 0.24,
+              height: wheelSize * 0.24,
+              borderRadius: (wheelSize * 0.24) / 2,
+            },
+          ]}
+        >
+          <Text style={styles.spinButtonText}>{isSpinning ? "" : "Girar"}</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.subContainer}>
+        <Button
+          size={24}
+          title={isSpinning ? "Girando..." : "Girar Roleta"}
+          onPress={spin}
+          disabled={isSpinning}
+        />
+      </View>
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="none"
+        onRequestClose={closeModal}
+      >
+        <Animated.View
+          style={[
+            styles.modalContainer,
+            {
+              opacity: modalOpacity,
+            },
+          ]}
+        >
+          {showConfetti && (
+            <ConfettiCannon
+              count={80}
+              origin={{ x: width / 2, y: -10 }}
+              fadeOut
+              fallSpeed={3000}
+              explosionSpeed={0}
+              onAnimationEnd={() => setShowConfetti(false)}
+            />
+          )}
+
+          <Animated.View
             style={[
-              styles.spinButton,
+              styles.modalContent,
               {
-                width: wheelSize * 0.24,
-                height: wheelSize * 0.24,
-                borderRadius: (wheelSize * 0.24) / 2,
+                transform: [{ scale: modalScale }],
               },
             ]}
           >
-            <Text style={styles.spinButtonText}>
-              {isSpinning ? "" : "Girar"}
-            </Text>
-          </Pressable>
-        </View>
+            <Animated.Text
+              style={[
+                styles.modalTitle,
+                {
+                  transform: [{ scale: titleScale }],
+                },
+              ]}
+            >
+              🎉 Parabéns!
+            </Animated.Text>
 
-        <View style={styles.subContainer}>
-          <Button
-            size={24}
-            title={isSpinning ? "Girando..." : "Girar Roleta"}
-            onPress={spin}
-            disabled={isSpinning}
-          />
-        </View>
+            <Animated.Text
+              style={[
+                styles.modalTitle,
+                {
+                  transform: [{ scale: titleScale }],
+                },
+              ]}
+            >
+              {result?.title}
+            </Animated.Text>
 
-        <Modal
-          visible={modalVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            {showConfetti && (
-              <ConfettiCannon
-                count={80}
-                origin={{ x: width / 2, y: -10 }}
-                fadeOut
-                fallSpeed={3000}
-                explosionSpeed={0}
-                onAnimationEnd={() => setShowConfetti(false)}
-              />
-            )}
+            <Animated.Text
+              style={[
+                styles.modalMessage,
+                {
+                  opacity: messageOpacity,
+                },
+              ]}
+            >
+              {result?.message}
+            </Animated.Text>
 
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>🎉 Parabéns!</Text>
-              <Text style={styles.modalTitle}>{result?.title}</Text>
-              <Text style={styles.modalMessage}>{result?.message}</Text>
-
-              <Pressable
-                style={styles.modalButton}
-                onPress={() => {
-                  setModalVisible(false);
-                  if (result?.isPrize && result.quant > 0) {
-                    updateRow(PRIZES_TABLE, result.id, {
-                      quant: result.quant - 1,
-                    });
-                  }
-                  navigation.navigate("home");
-                }}
+            <Pressable
+              onPress={closeModal}
+              onPressIn={handleButtonPressIn}
+              onPressOut={handleButtonPressOut}
+            >
+              <Animated.View
+                style={[
+                  styles.modalButton,
+                  {
+                    transform: [
+                      { scale: buttonScale },
+                      { scale: buttonPressScale },
+                    ],
+                    opacity: buttonScale,
+                  },
+                ]}
               >
                 <Text style={styles.modalButtonText}>Concluir</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    </ImageBackground>
+              </Animated.View>
+            </Pressable>
+          </Animated.View>
+        </Animated.View>
+      </Modal>
+    </View>
   );
 }
