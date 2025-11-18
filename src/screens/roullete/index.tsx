@@ -271,7 +271,7 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
                 .sort((a, b) => a.order - b.order)
                 .map((item, index) => {
                   const { x, y, angle } = getTextPosition(index);
-                  const textAngle = angle + 0;
+                  const textAngle = angle + 90;
 
                   return (
                     <G key={item.id || index}>
@@ -285,7 +285,7 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
                         x={x}
                         y={y}
                         fill="#fff"
-                        fontSize={RFValue(22)}
+                        fontSize={RFValue(11)}
                         fontWeight="bold"
                         textAnchor="middle"
                         alignmentBaseline="middle"
@@ -369,17 +369,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
               },
             ]}
           >
-            <Animated.Text
-              style={[
-                styles.modalTitle,
-                {
-                  transform: [{ scale: titleScale }],
-                },
-              ]}
-            >
-              🎉 Parabéns!
-            </Animated.Text>
-
             <Animated.Text
               style={[
                 styles.modalTitle,
