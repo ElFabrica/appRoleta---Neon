@@ -377,17 +377,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
                 },
               ]}
             >
-              🎉 Parabéns!
-            </Animated.Text>
-
-            <Animated.Text
-              style={[
-                styles.modalTitle,
-                {
-                  transform: [{ scale: titleScale }],
-                },
-              ]}
-            >
               {result?.title}
             </Animated.Text>
 
