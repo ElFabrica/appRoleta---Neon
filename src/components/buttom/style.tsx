@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { colors } from "../../shared/colors";
 
 export const styles = StyleSheet.create({
   main: {
     width: "100%",
   },
   container: {
-    backgroundColor: "#8E483E",
+    backgroundColor: colors["button-secondary"],
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",

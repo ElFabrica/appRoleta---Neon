@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { colors } from "../../shared/colors";
 
 export const styles = StyleSheet.create({
   wrapper: {
@@ -11,7 +12,7 @@ export const styles = StyleSheet.create({
     fontWeight: 600,
     borderWidth: 2,
     borderRadius: 20,
-    borderColor: "#8E483E",
+    borderColor: colors["border-input-primary"],
     padding: 10,
     width: "100%",
     minHeight: 65,

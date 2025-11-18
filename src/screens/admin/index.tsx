@@ -32,11 +32,9 @@ export function Admin() {
   function confirmPrize() {
     if (isPrize === true) {
       setIsPrize(false);
-      console.log("Desconfirma");
       return;
     } else {
       setIsPrize(true);
-      console.log("Confirma");
     }
   }
   function toggleModal() {
@@ -52,7 +50,6 @@ export function Admin() {
       >;
       const data = Object.entries(table);
       setPrizes(data);
-      console.log("Prêmios carregados:", data);
     };
 
     loadPrizes();

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { colors } from "../../shared/colors";
 
 export const styles = StyleSheet.create({
   subContainer: {
@@ -16,7 +17,7 @@ export const styles = StyleSheet.create({
   Title: {
     fontSize: RFValue(32),
     fontWeight: "700",
-    color: "#8E483E",
+    color: colors["text-primary"],
     textAlign: "center",
     marginBottom: 16,
   },
@@ -53,7 +54,7 @@ export const styles = StyleSheet.create({
     padding: 10,
     width: "100%",
     minHeight: 65,
-    borderColor: "#8E483E",
+    borderColor: colors["border-input-primary"],
   },
   logoContainer: {
     alignItems: "center",

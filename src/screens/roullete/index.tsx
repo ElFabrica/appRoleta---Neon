@@ -29,9 +29,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
 
   const rotation = useRef(new Animated.Value(0)).current;
 
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
-
   // Animações do modal
   const modalScale = useRef(new Animated.Value(0)).current;
   const modalOpacity = useRef(new Animated.Value(0)).current;
@@ -50,29 +47,30 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
 
   const anglePerSlice = 360 / (prizes.length || 1);
 
+  // ✅ CORRIGIDO: Seguindo o padrão do Admin
   useEffect(() => {
-    const load = () => {
-      const data = Object.entries(store.getTable(PRIZES_TABLE))
-        .map(([key, value]: [string, any]) => ({
-          id: key,
-          name: value.name,
-          color: value.color,
-          probability: value.probability ?? 1,
-          quant: value.quant,
-          isPrize: value.isPrize,
-          prizeReal: value.prizeReal,
-          order: value.order,
-          title: value.title,
-          message: value.message,
+    const loadPrizes = () => {
+      const table = store.getTable(PRIZES_TABLE) as unknown as Record<
+        string,
+        Prize
+      >;
+      const entries = Object.entries(table);
+
+      // Transforma [id, Prize][] em Prize[] com id incluso
+      const data = entries
+        .map(([id, prize]) => ({
+          ...prize,
+          id, // Adiciona o id ao objeto
         }))
-        .filter((prize) => prize.quant > 0);
+        .filter((prize) => prize.quant > 0); // Filtra apenas prêmios disponíveis
 
       setPrizes(data);
       console.log("Prêmios carregados:", data);
     };
 
-    load();
-    const listenerId = store.addTableListener(PRIZES_TABLE, load);
+    loadPrizes();
+    const listenerId = store.addTableListener(PRIZES_TABLE, loadPrizes);
+
     return () => {
       store.delListener(listenerId);
     };
@@ -132,36 +130,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
       }, 300);
     }
   }, [modalVisible]);
-
-  const handlePressIn = () => {
-    Animated.parallel([
-      Animated.timing(scaleAnim, {
-        toValue: 0.95,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 0.9,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.parallel([
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
 
   // Animações do botão "Concluir"
   const handleButtonPressIn = () => {
@@ -306,7 +274,7 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
                   const textAngle = angle + 0;
 
                   return (
-                    <G key={index}>
+                    <G key={item.id || index}>
                       <Path
                         d={createArc(index)}
                         fill={item.color || "#333"}

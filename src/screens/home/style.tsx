@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { colors } from "../../shared/colors";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -22,21 +23,21 @@ export const styles = StyleSheet.create({
   Title: {
     fontSize: RFValue(36),
     fontWeight: "700",
-    color: "#8E483E",
+    color: colors["text-primary"],
     fontFamily: "Nunito_400Regular",
     textAlign: "center",
   },
   Subtitle: {
     fontSize: RFValue(16),
     fontWeight: "400",
-    color: "#8E483E",
+    color: colors["text-secondary"],
     textAlign: "center",
   },
   SubtitleFooter: {
     fontSize: RFValue(12),
     marginTop: RFValue(20),
     fontWeight: "400",
-    color: "#8E483E",
+    color: colors["text-secondary"],
     textAlign: "center",
   },
   containerInstructions: {

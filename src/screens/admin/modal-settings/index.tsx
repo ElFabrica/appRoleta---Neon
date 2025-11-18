@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Modal, ScrollView } from "react-native";
+import { View, Text, Pressable, Modal, ScrollView, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { style } from "./style";
 import { ArrowRightIcon, ChevronRight, Check } from "lucide-react-native";
@@ -55,6 +55,11 @@ export function ModalConfigurations({
       });
     });
     onConfirm();
+    onClose();
+    Alert.alert(
+      "Configurações finalizadas",
+      "Feche e abra seu app para visualizar as alterações"
+    );
   };
 
   const getPageLabel = (pageId: string) => {

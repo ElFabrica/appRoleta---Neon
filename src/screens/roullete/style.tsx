@@ -1,18 +1,19 @@
 import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { colors } from "../../shared/colors";
 
 export const styles = StyleSheet.create({
   Container: {
-    width: '100%',
+    width: "100%",
     gap: 16,
     marginTop: RFValue(40),
     alignContent: "center",
     flex: 1,
   },
-      backgound: {
+  backgound: {
     flex: 1,
-    paddingHorizontal: RFValue(16)
-    },
+    paddingHorizontal: RFValue(16),
+  },
   imagem: {
     width: 150,
     height: 100,
@@ -22,8 +23,8 @@ export const styles = StyleSheet.create({
   },
   Title: {
     fontSize: RFValue(30),
-    fontWeight: '700',
-    color: "#333333",
+    fontWeight: "700",
+    color: colors["text-primary"],
     textAlign: "center",
   },
   subContainer: {
@@ -35,7 +36,6 @@ export const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    
   },
   wheelContainer: {
     justifyContent: "center",
@@ -56,52 +56,51 @@ export const styles = StyleSheet.create({
     zIndex: 10,
   },
   spinButton: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: "absolute",
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
   },
   spinButtonText: {
-    color: '#4B5563', // equivalente ao tw`text-gray-700`
-    fontWeight: 'bold',
+    color: "#4B5563", // equivalente ao tw`text-gray-700`
+    fontWeight: "bold",
     padding: 16,
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'rgba(0,0,0,0.6)',
-
+    backgroundColor: "rgba(0,0,0,0.6)",
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 32,
     borderRadius: 24,
-    alignItems: 'center',
+    alignItems: "center",
     zIndex: 10,
-    width:"90%"
+    width: "90%",
   },
   modalTitle: {
     fontSize: RFValue(24),
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    textAlign:"center"
+    textAlign: "center",
   },
-    modalMessage: {
+  modalMessage: {
     fontSize: RFValue(16),
     fontWeight: "600",
     marginBottom: 24,
-    textAlign:"center"
+    textAlign: "center",
   },
   modalButton: {
-    backgroundColor: '#16A34A', // equivalente ao tw`bg-green-600`
+    backgroundColor: "#16A34A", // equivalente ao tw`bg-green-600`
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
   },
   modalButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: RFValue(22)
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: RFValue(22),
   },
 });

@@ -1,17 +1,16 @@
 import { Image, ImageProps, View } from "react-native";
-import { styles } from "./style"
+import { styles } from "./style";
 
-type Props = ImageProps & {
-
-}
+type Props = ImageProps & {};
 
 export function LogoAbsolut({ ...props }: Props) {
-
   return (
     <View style={styles.wrapper}>
-      <Image {...props} source={require("../../assets/logo_rv.jpg")}
-        style={styles.image} />
+      <Image
+        {...props}
+        source={require("../../assets/logo-tercio-resende.png")}
+        style={styles.image}
+      />
     </View>
-  )
-
+  );
 }

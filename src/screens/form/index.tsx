@@ -40,9 +40,9 @@ export function Form({ navigation }: StackRoutesProps<"form">) {
   };
 
   function handleNextPage() {
-    if (getNextPage("instructions") !== "roullete") {
+    if (getNextPage("form") !== "roullete") {
       navigation.navigate(
-        getNextPage("instructions") as
+        getNextPage("form") as
           | "home"
           | "form"
           | "users"

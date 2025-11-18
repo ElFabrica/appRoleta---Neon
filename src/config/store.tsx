@@ -16,51 +16,94 @@ const SETTINGS_PAGE = "@settings-roullete-app-act";
 const persister: ExpoSqlitePersister = createExpoSqlitePersister(store, db);
 
 let isStoreInitialized = false;
+let initializationPromise: Promise<void> | null = null;
 
 const initializeStore = async () => {
-  if (isStoreInitialized) {
-    console.log("Store já inicializada.");
-    return;
+  // ✅ Evita múltiplas inicializações simultâneas
+  if (initializationPromise) {
+    console.log("Store está sendo inicializada, aguardando...");
+    return initializationPromise;
   }
 
-  try {
-    await persister.load();
+  if (isStoreInitialized) {
+    console.log("Store já inicializada.");
+    return Promise.resolve();
+  }
 
-    if (!store.hasTable(USERS_TABLE)) {
-      store.setTable(USERS_TABLE, {});
-    }
-    if (!store.hasTable(PRIZES_TABLE)) {
-      store.setTable(PRIZES_TABLE, {});
-    }
-    if (!store.hasTable(SETTINGS_PAGE)) {
-      store.setTable(SETTINGS_PAGE, {});
-    }
+  initializationPromise = (async () => {
+    try {
+      console.log("🔄 Iniciando carregamento da store do SQLite...");
 
-    await persister.startAutoSave();
-    isStoreInitialized = true;
-  } catch (error) {
-    console.error("Erro Crítico ao inicializar a store:", error);
-    throw error;
+      // ✅ Carrega dados do SQLite
+      await persister.load();
+
+      console.log("✅ Dados carregados do SQLite");
+
+      // ✅ Cria tabelas se não existirem
+      if (!store.hasTable(USERS_TABLE)) {
+        store.setTable(USERS_TABLE, {});
+        console.log(`Tabela ${USERS_TABLE} criada`);
+      }
+      if (!store.hasTable(PRIZES_TABLE)) {
+        store.setTable(PRIZES_TABLE, {});
+        console.log(`Tabela ${PRIZES_TABLE} criada`);
+      }
+      if (!store.hasTable(SETTINGS_PAGE)) {
+        store.setTable(SETTINGS_PAGE, {});
+        console.log(`Tabela ${SETTINGS_PAGE} criada`);
+      }
+
+      // ✅ Inicia auto-save
+      await persister.startAutoSave();
+
+      isStoreInitialized = true;
+      console.log("✅ Store inicializada com sucesso!");
+    } catch (error) {
+      console.error("❌ Erro Crítico ao inicializar a store:", error);
+      isStoreInitialized = false;
+      initializationPromise = null;
+      throw error;
+    }
+  })();
+
+  return initializationPromise;
+};
+
+// ✅ Função auxiliar para garantir que a store está pronta
+const ensureStoreInitialized = async () => {
+  if (!isStoreInitialized) {
+    await initializeStore();
   }
 };
 
 const clearTable = async (tableName: string) => {
-  if (!isStoreInitialized) {
-    console.warn(
-      "Tentando limpar tabela antes da store ser inicializada. Carregando store primeiro..."
-    );
-    await initializeStore();
-  }
+  await ensureStoreInitialized();
   store.delTable(tableName);
   console.log(`Tabela ${tableName} limpa. Autosave deve persistir.`);
 };
-const updateRow = (tableName: string, rowId: string, newData: any) => {
+
+const updateRow = async (tableName: string, rowId: string, newData: any) => {
+  await ensureStoreInitialized();
+
   const currentRow = store.getRow(tableName, rowId);
   if (!currentRow) {
     console.warn(`Linha com ID ${rowId} não encontrada na tabela ${tableName}`);
     return;
   }
   store.setRow(tableName, rowId, { ...currentRow, ...newData });
+  console.log(`✅ Linha ${rowId} atualizada na tabela ${tableName}`);
+};
+
+// ✅ NOVO: Função segura para obter tabela
+const getTableSafe = async (tableName: string) => {
+  await ensureStoreInitialized();
+  return store.getTable(tableName);
+};
+
+// ✅ NOVO: Função segura para adicionar linha
+const addRowSafe = async (tableName: string, data: any) => {
+  await ensureStoreInitialized();
+  return store.addRow(tableName, data);
 };
 
 export {
@@ -69,8 +112,11 @@ export {
   PRIZES_TABLE,
   SETTINGS_PAGE,
   initializeStore,
-  persister, // Exporte se precisar acessar diretamente, mas geralmente não é necessário fora daqui
+  persister,
   clearTable,
-  isStoreInitialized, // Pode ser útil para verificar em outros lugares
+  isStoreInitialized,
   updateRow,
+  ensureStoreInitialized,
+  getTableSafe,
+  addRowSafe,
 };
