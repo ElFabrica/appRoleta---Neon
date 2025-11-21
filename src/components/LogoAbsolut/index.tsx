@@ -8,7 +8,7 @@ export function LogoAbsolut({ ...props }: Props) {
     <View style={styles.wrapper}>
       <Image
         {...props}
-        source={require("../../assets/logo-tercio-resende.png")}
+        source={require("../../assets/logo-lima.jpg")}
         style={styles.image}
       />
     </View>

@@ -4,7 +4,7 @@ import { styles } from "./style";
 export function Logo() {
   return (
     <Image
-      source={require("../../assets/logo-tercio-resende.png")}
+      source={require("../../assets/logo-lima.jpg")}
       style={styles.image}
     />
   );

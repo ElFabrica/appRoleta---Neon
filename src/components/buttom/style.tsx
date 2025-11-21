@@ -14,9 +14,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     width: "100%",
+    borderColor: colors["border-input-primary"],
   },
   title: {
-    color: "#FFFFFF",
+    color: colors["label-button-primary"],
     fontSize: RFValue(14),
     fontWeight: "500",
   },

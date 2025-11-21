@@ -63,7 +63,14 @@ export function Users() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(user),
+          body: JSON.stringify({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            anotacao: "lead do lima atacado",
+            game: "roleta",
+          }),
         }
       );
 
@@ -91,7 +98,7 @@ export function Users() {
       email: String(user.email),
       phone: String(user.phone),
       game: String("Roleta"),
-      nota: String("Leads da clinica tercio resende"),
+      nota: String("Leads da limas atacado"),
     }));
     setUsers(response);
     // console.log('📦 Dados atuais:', data); //Mostrar dados no console
