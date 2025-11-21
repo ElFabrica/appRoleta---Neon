@@ -20,6 +20,45 @@ import { Prize } from "../../types/Prizes";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
 import { LogoAbsolut } from "../../components/LogoAbsolut";
 
+// ✅ FUNÇÃO ADICIONADA: Calcula a cor do texto baseada no fundo
+const getContrastColor = (backgroundColor: string): string => {
+  const hexToRgb = (hex: string) => {
+    const cleanHex = hex.replace("#", "");
+    const fullHex =
+      cleanHex.length === 3
+        ? cleanHex
+            .split("")
+            .map((char) => char + char)
+            .join("")
+        : cleanHex;
+
+    const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
+  };
+
+  const getLuminance = (r: number, g: number, b: number) => {
+    const [rs, gs, bs] = [r, g, b].map((val) => {
+      const normalized = val / 255;
+      return normalized <= 0.03928
+        ? normalized / 12.92
+        : Math.pow((normalized + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+  };
+
+  const rgb = hexToRgb(backgroundColor);
+  if (!rgb) return "#FFFFFF";
+
+  const luminance = getLuminance(rgb.r, rgb.g, rgb.b);
+  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+};
+
 export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   const { width } = useWindowDimensions();
 
@@ -47,7 +86,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
 
   const anglePerSlice = 360 / (prizes.length || 1);
 
-  // ✅ CORRIGIDO: Seguindo o padrão do Admin
   useEffect(() => {
     const loadPrizes = () => {
       const table = store.getTable(PRIZES_TABLE) as unknown as Record<
@@ -56,13 +94,12 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
       >;
       const entries = Object.entries(table);
 
-      // Transforma [id, Prize][] em Prize[] com id incluso
       const data = entries
         .map(([id, prize]) => ({
           ...prize,
-          id, // Adiciona o id ao objeto
+          id,
         }))
-        .filter((prize) => prize.quant > 0); // Filtra apenas prêmios disponíveis
+        .filter((prize) => prize.quant > 0);
 
       setPrizes(data);
       console.log("Prêmios carregados:", data);
@@ -79,7 +116,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   // Animação de entrada do modal
   useEffect(() => {
     if (modalVisible) {
-      // Reset das animações
       modalScale.setValue(0);
       modalOpacity.setValue(0);
       titleScale.setValue(0);
@@ -87,15 +123,12 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
       buttonScale.setValue(0);
       buttonPressScale.setValue(1);
 
-      // Sequência de animações
       Animated.sequence([
-        // 1. Fade in do backdrop
         Animated.timing(modalOpacity, {
           toValue: 1,
           duration: 300,
           useNativeDriver: true,
         }),
-        // 2. Bounce do modal
         Animated.spring(modalScale, {
           toValue: 1,
           friction: 8,
@@ -104,7 +137,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
         }),
       ]).start();
 
-      // 3. Animações em paralelo do conteúdo (com delay)
       setTimeout(() => {
         Animated.parallel([
           Animated.spring(titleScale, {
@@ -131,7 +163,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
     }
   }, [modalVisible]);
 
-  // Animações do botão "Concluir"
   const handleButtonPressIn = () => {
     Animated.spring(buttonPressScale, {
       toValue: 0.92,
@@ -194,7 +225,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   };
 
   const closeModal = () => {
-    // Animação de saída
     Animated.parallel([
       Animated.timing(modalScale, {
         toValue: 0,
@@ -273,6 +303,9 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
                   const { x, y, angle } = getTextPosition(index);
                   const textAngle = angle + 90;
 
+                  // ✅ MODIFICADO: Calcula a cor do texto baseada no fundo
+                  const textColor = getContrastColor(item.color || "#333");
+
                   return (
                     <G key={item.id || index}>
                       <Path
@@ -284,7 +317,7 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
                       <SvgText
                         x={x}
                         y={y}
-                        fill="#fff"
+                        fill={textColor} // ✅ Usa a cor calculada
                         fontSize={RFValue(11)}
                         fontWeight="bold"
                         textAnchor="middle"
