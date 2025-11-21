@@ -21,7 +21,7 @@ import { Input } from "../../components/input/Input";
 interface User {
   id: string;
   name: string;
-  email: string;
+  birth: string;
   phone: string;
   nota: string;
 }
@@ -66,7 +66,7 @@ export function Users() {
           body: JSON.stringify({
             id: user.id,
             name: user.name,
-            email: user.email,
+            email: user.birth, //mandando data de aniversário em email
             phone: user.phone,
             anotacao: "lead do lima atacado",
             game: "roleta",
@@ -92,14 +92,16 @@ export function Users() {
 
   const get = (): void => {
     const data = store.getTable(USERS_TABLE);
+
     const response: User[] = Object.entries(data).map(([id, user]) => ({
       id,
       name: String(user.name),
-      email: String(user.email),
+      birth: String(user.birth),
       phone: String(user.phone),
       game: String("Roleta"),
       nota: String("Leads da limas atacado"),
     }));
+    console.log(response);
     setUsers(response);
     // console.log('📦 Dados atuais:', data); //Mostrar dados no console
   };
@@ -125,7 +127,9 @@ export function Users() {
           {users.length > 0 && (
             <View style={tw`flex-row justify-between items-center`}>
               <Text style={tw`text-base text-center min-w-30`}>Nome</Text>
-              <Text style={tw`text-base text-center min-w-30`}>Email</Text>
+              <Text style={tw`text-base text-center min-w-30`}>
+                Aniversário
+              </Text>
               <Text style={tw`text-base text-center min-w-30`}>Telefone</Text>
             </View>
           )}
@@ -160,7 +164,7 @@ export function Users() {
                         color: "#333333",
                       }}
                     >
-                      {item.email}
+                      {item.birth}
                     </Text>
                     <Text
                       style={{

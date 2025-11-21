@@ -15,22 +15,23 @@ export function Form({ navigation }: StackRoutesProps<"form">) {
   const { loadSavedConfigs, getNextPage } = usePage();
 
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [birth, setbirth] = useState("");
   const [phone, setPhone] = useState("");
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const onSubmit = () => {
-    if (!name || !phone) {
+    if (!name || !phone || !birth) {
       Alert.alert("Erro", "Preencha todos os dados");
       return;
     }
 
     const id = Math.random().toString(30).substring(2, 20);
     try {
-      store.setRow(USERS_TABLE, id, { name, email, phone });
-
+      //salvando data de nascimento em email
+      store.setRow(USERS_TABLE, id, { name, birth, phone });
+      console.log("birth", store.getTable(USERS_TABLE));
       setName("");
-      setEmail("");
+      setbirth("");
       setPhone("");
 
       handleNextPage();
@@ -71,15 +72,16 @@ export function Form({ navigation }: StackRoutesProps<"form">) {
           <Input place="John" value={name} onChangeText={setName} />
         </View>
 
-        {/* EMAIL */}
+        {/* DATA DE NASCIMENTO */}
         <View style={styles.inputContainer}>
-          <Text style={styles.subTitile}>Email</Text>
-          <Input
-            place="seu@email.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
+          <Text style={styles.subTitile}>Data de nascimento</Text>
+          <MaskInput
+            value={birth}
+            onChangeText={setbirth}
+            mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
+            keyboardType="numeric"
+            placeholder="00/00/0000"
+            style={styles.phoneInput}
           />
         </View>
 

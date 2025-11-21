@@ -102,7 +102,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
         .filter((prize) => prize.quant > 0);
 
       setPrizes(data);
-      console.log("Prêmios carregados:", data);
     };
 
     loadPrizes();
