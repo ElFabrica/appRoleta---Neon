@@ -2,7 +2,7 @@ import { View, Text, Pressable, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Cog } from "lucide-react-native";
 import LottieView from "lottie-react-native";
-import { Button } from "../../components/buttom/Buttom";
+import { Button } from "../../components/buttom";
 import { styles } from "./style";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
 import { Logo } from "../../components/logo/Logo";
@@ -54,6 +54,7 @@ export function Home({ navigation }: StackRoutesProps<"home">) {
           | "roullete"
           | "admin"
           | "instructions"
+          | "carousel"
       );
       return;
     }

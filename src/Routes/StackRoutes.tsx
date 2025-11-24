@@ -11,7 +11,9 @@ import { instructions } from "../screens/instructions/index";
 
 import { Admin } from "../screens/admin/index";
 import { Provider as TinybaseProvider } from "tinybase/ui-react";
-import { store as globalAppStore } from "../config/store"; // <--- IMPORTE SUA STORE GLOBAL
+import { store as globalAppStore } from "../storge/store"; // <--- IMPORTE SUA STORE GLOBAL
+import { SettingsMidia } from "@/screens/Settings-midia";
+import { CarouselTotem } from "@/screens/HomeCarrocel";
 
 // Defina os nomes das rotas e seus parâmetros
 export type StackRoutesList = {
@@ -19,7 +21,9 @@ export type StackRoutesList = {
   form: undefined;
   users: undefined;
   roullete: undefined;
-  admin: undefined; // Mantenha 'admin' minúsculo se for o nome da rota que você quer
+  admin: undefined;
+  SettingsMidia: undefined;
+  carousel: undefined;
   instructions: undefined;
 };
 
@@ -64,6 +68,16 @@ export function StacksRoutes() {
             name="instructions" // Nome da rota
             component={instructions} // Componente associado (AdminScreen é o import)
             options={{ headerShown: true, title: "Instruções" }}
+          />
+          <Stack.Screen
+            name="SettingsMidia" // Nome da rota
+            component={SettingsMidia} // Componente associado (AdminScreen é o import)
+            options={{ headerShown: false, title: "Configurações de mídia" }}
+          />
+          <Stack.Screen
+            name="carousel" // Nome da rota
+            component={CarouselTotem} // Componente associado (AdminScreen é o import)
+            options={{ headerShown: true, title: "Carrocel" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -15,7 +15,7 @@ import {
   USERS_TABLE,
   initializeStore,
   clearTable,
-} from "../../config/store";
+} from "../../storge/store";
 import { Input } from "../../components/input/Input";
 
 interface User {

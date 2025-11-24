@@ -8,10 +8,10 @@ import {
   Alert,
 } from "react-native";
 import tw from "twrnc";
-import { store, PRIZES_TABLE } from "../../config/store";
+import { store, PRIZES_TABLE } from "../../storge/store";
 
 import { CircleDashed, CircleCheck, SettingsIcon } from "lucide-react-native";
-import { Button } from "../../components/buttom/Buttom";
+import { Button } from "../../components/buttom";
 import { Prize } from "../../types/Prizes";
 import { style } from "./style";
 import { ModalConfigurations } from "./modal-settings";

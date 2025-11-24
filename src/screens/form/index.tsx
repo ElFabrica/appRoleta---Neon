@@ -3,9 +3,9 @@ import { View, Text, Alert, ScrollView, Pressable } from "react-native";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
 import MaskInput from "react-native-mask-input";
 import { CircleCheck, CircleDashed } from "lucide-react-native";
-import { store, USERS_TABLE } from "../../config/store";
+import { store, USERS_TABLE } from "../../storge/store";
 import { RFValue } from "react-native-responsive-fontsize";
-import { Button } from "../../components/buttom/Buttom";
+import { Button } from "../../components/buttom";
 import { Input } from "../../components/input/Input";
 import { styles } from "./style";
 import { LogoAbsolut } from "../../components/LogoAbsolut";
@@ -49,6 +49,7 @@ export function Form({ navigation }: StackRoutesProps<"form">) {
           | "roullete"
           | "admin"
           | "instructions"
+          | "carousel"
       );
       return;
     }

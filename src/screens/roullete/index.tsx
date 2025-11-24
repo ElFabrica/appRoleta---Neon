@@ -11,10 +11,10 @@ import {
 import Svg, { G, Path, Circle, Text as SvgText } from "react-native-svg";
 import ConfettiCannon from "react-native-confetti-cannon";
 
-import { store, PRIZES_TABLE, updateRow } from "../../config/store";
+import { store, PRIZES_TABLE, updateRow } from "../../storge/store";
 
 import { styles } from "./style";
-import { Button } from "../../components/buttom/Buttom";
+import { Button } from "../../components/buttom";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Prize } from "../../types/Prizes";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
