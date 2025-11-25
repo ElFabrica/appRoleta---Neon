@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SETTINGS_PAGE, store } from "../config/store";
+import { SETTINGS_PAGE, store } from "../storge/store";
 
 interface PageConfig {
   id: string;
@@ -13,6 +13,7 @@ export function usePage() {
     { id: "form", label: "Formulário" },
     { id: "roullete", label: "Roleta" },
     { id: "instructions", label: "Instruções" },
+    { id: "carousel", label: "Carrocel" },
   ];
 
   const [pageConfigs, setPageConfigs] = useState<PageConfig[]>(

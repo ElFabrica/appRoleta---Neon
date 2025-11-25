@@ -2,7 +2,7 @@ import { View, Text, Pressable, Modal, ScrollView, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { style } from "./style";
 import { ArrowRightIcon, ChevronRight, Check } from "lucide-react-native";
-import { SETTINGS_PAGE, store } from "../../../config/store";
+import { SETTINGS_PAGE, store } from "../../../storge/store";
 
 interface ModalAcessoProps {
   visible: boolean;
