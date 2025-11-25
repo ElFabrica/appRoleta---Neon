@@ -1,4 +1,3 @@
-import { colors } from "@/shared/style/colors";
 import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
@@ -13,13 +12,11 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    width: "100%",
-    height: "100%",
   },
 
   header: {
     position: "absolute",
-    top: 40,
+    top: 20,
     left: 0,
     right: 0,
     zIndex: 10,

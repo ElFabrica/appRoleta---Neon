@@ -7,13 +7,13 @@ import { Home } from "../screens/home/index";
 import { Form } from "../screens/form/index";
 import { Users } from "../screens/users/index";
 import { Roullete } from "../screens/roullete/index";
-import { instructions } from "../screens/instructions/index";
 
 import { Admin } from "../screens/admin/index";
 import { Provider as TinybaseProvider } from "tinybase/ui-react";
 import { store as globalAppStore } from "../storge/store"; // <--- IMPORTE SUA STORE GLOBAL
 import { SettingsMidia } from "@/screens/Settings-midia";
 import { CarouselTotem } from "@/screens/HomeCarrocel";
+import { SystemBars } from "react-native-edge-to-edge";
 
 // Defina os nomes das rotas e seus parâmetros
 export type StackRoutesList = {
@@ -24,7 +24,6 @@ export type StackRoutesList = {
   admin: undefined;
   SettingsMidia: undefined;
   carousel: undefined;
-  instructions: undefined;
 };
 
 export type StackRoutesProps<T extends keyof StackRoutesList> =
@@ -37,7 +36,14 @@ export function StacksRoutes() {
     // Forneça a instância da store global para o provider
     <TinybaseProvider store={globalAppStore}>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ contentStyle: { padding: 8 } }}>
+        <SystemBars style={"dark"} hidden={true} />
+
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { padding: 8 },
+          }}
+        >
           <Stack.Screen
             name="home"
             component={Home}
@@ -62,22 +68,22 @@ export function StacksRoutes() {
           <Stack.Screen
             name="admin" // Nome da rota
             component={Admin} // Componente associado (AdminScreen é o import)
-            options={{ headerShown: true, title: "Painel Admin" }}
+            options={{ title: "Painel Admin" }}
           />
-          <Stack.Screen
-            name="instructions" // Nome da rota
-            component={instructions} // Componente associado (AdminScreen é o import)
-            options={{ headerShown: true, title: "Instruções" }}
-          />
+
           <Stack.Screen
             name="SettingsMidia" // Nome da rota
             component={SettingsMidia} // Componente associado (AdminScreen é o import)
             options={{ headerShown: false, title: "Configurações de mídia" }}
           />
           <Stack.Screen
-            name="carousel" // Nome da rota
-            component={CarouselTotem} // Componente associado (AdminScreen é o import)
-            options={{ headerShown: true, title: "Carrocel" }}
+            name="carousel"
+            component={CarouselTotem}
+            options={{
+              headerShown: false,
+              title: "Carrocel",
+              contentStyle: { backgroundColor: "#333333" },
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -19,6 +19,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { Prize } from "../../types/Prizes";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
 import { LogoAbsolut } from "../../components/LogoAbsolut";
+import { usePage } from "@/hooks/use-page";
 
 export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   const { width } = useWindowDimensions();
@@ -46,6 +47,7 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
   const [showConfetti, setShowConfetti] = useState(false);
 
   const anglePerSlice = 360 / (prizes.length || 1);
+  const { getNextPage } = usePage();
 
   // ✅ CORRIGIDO: Seguindo o padrão do Admin
   useEffect(() => {
@@ -65,7 +67,6 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
         .filter((prize) => prize.quant > 0); // Filtra apenas prêmios disponíveis
 
       setPrizes(data);
-      console.log("Prêmios carregados:", data);
     };
 
     loadPrizes();
@@ -212,6 +213,18 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
         updateRow(PRIZES_TABLE, result.id, {
           quant: result.quant - 1,
         });
+      }
+      if (getNextPage("roullete")) {
+        navigation.navigate(
+          getNextPage("roullete") as
+            | "home"
+            | "form"
+            | "users"
+            | "roullete"
+            | "admin"
+            | "carousel"
+        );
+        return;
       }
       navigation.navigate("home");
     });

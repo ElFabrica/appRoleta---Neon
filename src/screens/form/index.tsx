@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Alert, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  ScrollView,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { StackRoutesProps } from "../../Routes/StackRoutes";
 import MaskInput from "react-native-mask-input";
 import { CircleCheck, CircleDashed } from "lucide-react-native";
@@ -10,6 +17,7 @@ import { Input } from "../../components/input/Input";
 import { styles } from "./style";
 import { LogoAbsolut } from "../../components/LogoAbsolut";
 import { usePage } from "../../hooks/use-page";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export function Form({ navigation }: StackRoutesProps<"form">) {
   const { loadSavedConfigs, getNextPage } = usePage();
@@ -48,7 +56,6 @@ export function Form({ navigation }: StackRoutesProps<"form">) {
           | "users"
           | "roullete"
           | "admin"
-          | "instructions"
           | "carousel"
       );
       return;
@@ -64,7 +71,22 @@ export function Form({ navigation }: StackRoutesProps<"form">) {
     <View style={styles.backgound}>
       <LogoAbsolut />
       <ScrollView keyboardShouldPersistTaps="handled">
-        <Text style={styles.Title}>Cadastro</Text>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <MaterialIcons
+              name="arrow-back"
+              size={RFValue(20)}
+              color="purple"
+            />
+          </TouchableOpacity>
+          <Text style={styles.Title}>Cadastro</Text>
+          <MaterialIcons
+            style={{ opacity: 0 }}
+            name="arrow-back"
+            size={RFValue(20)}
+            color="purple"
+          />
+        </View>
 
         {/* NOME */}
         <View style={styles.inputContainer}>

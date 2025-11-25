@@ -45,7 +45,7 @@ export function Home({ navigation }: StackRoutesProps<"home">) {
     setSenhaAdmin("");
   }
   function handleNextPage() {
-    if (getNextPage("home") !== "form") {
+    if (getNextPage("home")) {
       navigation.navigate(
         getNextPage("home") as
           | "home"
@@ -53,17 +53,12 @@ export function Home({ navigation }: StackRoutesProps<"home">) {
           | "users"
           | "roullete"
           | "admin"
-          | "instructions"
           | "carousel"
       );
       return;
     }
     navigation.navigate("form");
   }
-
-  useEffect(() => {
-    loadSavedConfigs();
-  }, []);
 
   return (
     <View style={styles.backgound}>

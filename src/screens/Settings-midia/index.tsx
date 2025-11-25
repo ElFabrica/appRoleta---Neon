@@ -39,7 +39,6 @@ export function SettingsMidia({
     handleCustomNameChange,
     handleDurationBlur,
     handleSaveCustomName,
-    requestPermissions,
     pickMedia: pickMediaHandler,
     handleRemoveMedia,
   } = useMediaHandlers({

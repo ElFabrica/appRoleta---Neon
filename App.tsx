@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, Alert } from "react-native";
 import tw from "twrnc"; // Se estiver usando Tailwind RN CLI
 
-import { StackRoutesList, StacksRoutes } from "./src/Routes/StackRoutes"; // Ajuste o caminho para o seu AppNavigator
+import { StacksRoutes } from "./src/Routes/StackRoutes"; // Ajuste o caminho para o seu AppNavigator
 import { initializeStore } from "./src/storge/store"; // Ajuste o caminho para sua config da store
 
 const App = () => {
@@ -15,9 +15,7 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        console.log("App: Iniciando inicialização da store...");
         await initializeStore(); // Sua função que carrega dados e inicia o autosave
-        console.log("App: Store inicializada com sucesso.");
         setIsStoreReady(true);
       } catch (e: any) {
         console.error(
@@ -65,6 +63,7 @@ const App = () => {
   }
 
   // Uma vez que a store está pronta e não há erros, renderize o AppNavigator
+
   return <StacksRoutes />;
 };
 

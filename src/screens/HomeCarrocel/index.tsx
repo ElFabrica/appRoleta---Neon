@@ -2,119 +2,30 @@ import {
   View,
   Text,
   Pressable,
-  Modal,
-  TextInput,
   Dimensions,
-  Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
-import { VideoView, useVideoPlayer } from "expo-video";
 import { useFocusEffect } from "@react-navigation/native";
 import { useSharedValue } from "react-native-reanimated";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import { styles } from "./styles";
 import { useMedia, ICarouselMedia } from "@/hooks/use-midia";
 import { StackRoutesProps } from "@/Routes/StackRoutes";
+import { MaterialIcons } from "@expo/vector-icons";
+import { VideoCarouselItem } from "./components/video-carousel";
+import { AdminModal } from "./components/admin-modal";
+import { ImageCarouselItem } from "./components/image-carousel-item";
 import { usePage } from "@/hooks/use-page";
 
 // ==================== CONSTANTES ====================
 const DEFAULT_IMAGE_DURATION = 7;
 const VIDEO_END_CHECK_INTERVAL = 100;
+const password = "Act@2024";
 
 // ==================== COMPONENTES AUXILIARES ====================
-
-interface VideoCarouselItemProps {
-  uri: string;
-  onVideoEnd: () => void;
-  isActive: boolean;
-  isPaused: boolean;
-  shouldLoop?: boolean;
-  nextPage: () => void;
-}
-
-function VideoCarouselItem({
-  uri,
-  onVideoEnd,
-  isActive,
-  isPaused,
-  shouldLoop = false,
-  nextPage,
-}: VideoCarouselItemProps) {
-  const { width, height } = Dimensions.get("window");
-  const player = useVideoPlayer(uri, (player) => {
-    player.loop = shouldLoop;
-  });
-
-  useEffect(() => {
-    if (!player || shouldLoop) return;
-
-    const interval = setInterval(() => {
-      const { status, currentTime } = player;
-
-      if (status === "idle" && currentTime > 0) {
-        onVideoEnd();
-        clearInterval(interval);
-      }
-    }, VIDEO_END_CHECK_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [player, onVideoEnd, shouldLoop]);
-
-  useEffect(() => {
-    if (isActive && !isPaused) {
-      player.play();
-    } else {
-      player.pause();
-      if (!isActive) {
-        player.currentTime = 0;
-      }
-    }
-  }, [isActive, isPaused, player]);
-
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Pressable onPress={() => nextPage()}>
-        <VideoView
-          player={player}
-          style={{ width, height }}
-          contentFit="contain"
-          allowsFullscreen={false}
-          allowsPictureInPicture={false}
-          nativeControls={false}
-        />
-      </Pressable>
-    </View>
-  );
-}
-
-interface ImageCarouselItemProps {
-  uri: string;
-  width: number;
-  height: number;
-  nextPage: () => void;
-}
-
-function ImageCarouselItem({
-  uri,
-  width,
-  height,
-  nextPage,
-}: ImageCarouselItemProps) {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Pressable onPress={nextPage}>
-        <Image
-          source={{ uri }}
-          style={{ width: width * 0.9, height: height * 0.7 }}
-          resizeMode="contain"
-        />
-      </Pressable>
-    </View>
-  );
-}
 
 interface EmptyStateProps {
   onAdminPress: () => void;
@@ -169,9 +80,7 @@ function EmptyState({ onAdminPress }: EmptyStateProps) {
   );
 }
 
-interface LoadingStateProps {}
-
-function LoadingState({}: LoadingStateProps) {
+function LoadingState() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ActivityIndicator size="large" color="purple" />
@@ -180,150 +89,112 @@ function LoadingState({}: LoadingStateProps) {
   );
 }
 
-interface AdminModalProps {
-  visible: boolean;
-  password: string;
-  onChangePassword: (text: string) => void;
-  onCancel: () => void;
-  onConfirm: () => void;
-}
-
-function AdminModal({
-  visible,
-  password,
-  onChangePassword,
-  onCancel,
-  onConfirm,
-}: AdminModalProps) {
-  return (
-    <Modal
-      animationType="slide"
-      transparent
-      visible={visible}
-      onRequestClose={onCancel}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Publicidades</Text>
-
-          <TextInput
-            placeholder="Digite a chave"
-            placeholderTextColor="#888"
-            style={styles.input}
-            secureTextEntry
-            value={password}
-            onChangeText={onChangePassword}
-          />
-
-          <View style={styles.modalButtons}>
-            <Pressable style={styles.cancelButton} onPress={onCancel}>
-              <Text style={styles.modalButtonText}>Cancelar</Text>
-            </Pressable>
-            <Pressable style={styles.confirmButton} onPress={onConfirm}>
-              <Text style={styles.modalButtonText}>Confirmar</Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
 // ==================== COMPONENTE PRINCIPAL ====================
 
 export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
   const [tasksModalVisible, setTasksModalVisible] = useState(false);
-  const [tasksPassword, setTasksPassword] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isScreenFocused, setIsScreenFocused] = useState(true);
+  const [isScreenFocused, setIsScreenFocused] = useState(false);
 
   const progress = useSharedValue<number>(0);
   const carouselRef = useRef<ICarouselInstance>(null);
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isMountedRef = useRef(true);
 
   const { width, height } = Dimensions.get("window");
   const { handleLoadingDatas, carouselMedia, loading } = useMedia();
-  const { loadSavedConfigs, getNextPage } = usePage();
+  const { getNextPage } = usePage();
+
+  // ==================== CLEANUP FUNCTION ====================
+  const cleanupTimer = useCallback(() => {
+    if (autoPlayTimerRef.current) {
+      clearTimeout(autoPlayTimerRef.current);
+      autoPlayTimerRef.current = null;
+    }
+  }, []);
 
   // ==================== FOCUS EFFECT ====================
   useFocusEffect(
     useCallback(() => {
+      isMountedRef.current = true;
       setIsScreenFocused(true);
 
-      handleLoadingDatas().catch((error) => {
-        console.error("Erro ao carregar mídias:", error);
-      });
+      // Carregar dados apenas se não houver mídias
+      if (carouselMedia.length === 0) {
+        handleLoadingDatas().catch((error) => {
+          console.error("Erro ao carregar mídias:", error);
+        });
+      }
 
       return () => {
+        isMountedRef.current = false;
         setIsScreenFocused(false);
-
-        if (autoPlayTimerRef.current) {
-          clearTimeout(autoPlayTimerRef.current);
-          autoPlayTimerRef.current = null;
-        }
+        cleanupTimer();
       };
-    }, [handleLoadingDatas])
+    }, []) // ✅ Dependências vazias para evitar múltiplas execuções
   );
 
   // ==================== HANDLERS ====================
+  const handleNextPage = useCallback(() => {
+    try {
+      const nextPage = getNextPage("carousel");
+      if (nextPage && nextPage !== "nada") {
+        navigation.navigate(nextPage as any);
+      } else {
+        navigation.navigate("form");
+      }
+    } catch (error) {
+      console.error("Erro ao navegar:", error);
+      navigation.navigate("form");
+    }
+  }, [getNextPage, navigation]);
+
   const handleAdminAccess = useCallback(() => {
     if (!navigation) {
       console.error("Navigation prop is undefined");
       return;
     }
+    if (adminPassword !== password) {
+      Alert.alert("Senha incorreta", "Tente novamente");
+      setAdminPassword("");
+      return;
+    }
 
     setTasksModalVisible(false);
-    navigation.navigate("admin");
-    setTasksPassword("");
-  }, [navigation]);
+    navigation.navigate("SettingsMidia");
+    setAdminPassword("");
+  }, [navigation, adminPassword]);
 
   const goToNext = useCallback(() => {
-    if (carouselMedia.length <= 1) return;
+    if (!isMountedRef.current || carouselMedia.length <= 1) return;
 
     const nextIndex = (currentIndex + 1) % carouselMedia.length;
     carouselRef.current?.scrollTo({ index: nextIndex, animated: true });
   }, [carouselMedia.length, currentIndex]);
 
   const handleVideoEnd = useCallback(() => {
-    if (carouselMedia.length > 1) {
+    if (isMountedRef.current && carouselMedia.length > 1) {
       goToNext();
     }
   }, [carouselMedia.length, goToNext]);
 
   const handleSnapToItem = useCallback((index: number) => {
-    setCurrentIndex(index);
+    if (isMountedRef.current) {
+      setCurrentIndex(index);
+    }
   }, []);
 
   const handleModalCancel = useCallback(() => {
     setTasksModalVisible(false);
-    setTasksPassword("");
+    setAdminPassword("");
   }, []);
-
-  function handleNextPage() {
-    if (getNextPage("carousel") !== "home") {
-      navigation.navigate(
-        getNextPage("carousel") as
-          | "home"
-          | "form"
-          | "users"
-          | "roullete"
-          | "admin"
-          | "instructions"
-          | "carousel"
-      );
-      return;
-    }
-    navigation.navigate("roullete");
-  }
 
   // ==================== AUTO-PLAY EFFECT ====================
   useEffect(() => {
-    if (autoPlayTimerRef.current) {
-      clearTimeout(autoPlayTimerRef.current);
-      autoPlayTimerRef.current = null;
-    }
+    cleanupTimer();
 
-    if (!isScreenFocused) return;
+    if (!isScreenFocused || !isMountedRef.current) return;
     if (carouselMedia.length <= 1) return;
 
     const currentItem = carouselMedia[currentIndex];
@@ -333,23 +204,22 @@ export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
       const durationMs = duration * 1000;
 
       autoPlayTimerRef.current = setTimeout(() => {
-        goToNext();
+        if (isMountedRef.current) {
+          goToNext();
+        }
       }, durationMs);
     }
 
-    return () => {
-      if (autoPlayTimerRef.current) {
-        clearTimeout(autoPlayTimerRef.current);
-        autoPlayTimerRef.current = null;
-      }
-    };
-  }, [currentIndex, carouselMedia, isScreenFocused, goToNext]);
+    return cleanupTimer;
+  }, [currentIndex, carouselMedia, isScreenFocused, goToNext, cleanupTimer]);
 
-  // ==================== INITIAL LOAD ====================
+  // ==================== CLEANUP ON UNMOUNT ====================
   useEffect(() => {
-    handleLoadingDatas();
-    loadSavedConfigs();
-  }, [handleLoadingDatas]);
+    return () => {
+      isMountedRef.current = false;
+      cleanupTimer();
+    };
+  }, [cleanupTimer]);
 
   // ==================== RENDER ITEM ====================
   const renderCarouselItem = useCallback(
@@ -357,22 +227,23 @@ export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
       if (item.type === "video") {
         return (
           <VideoCarouselItem
-            nextPage={handleNextPage}
+            VIDEO_END_CHECK_INTERVAL={VIDEO_END_CHECK_INTERVAL}
             uri={item.uri}
             onVideoEnd={handleVideoEnd}
-            isActive={index === currentIndex}
+            isActive={index === currentIndex && isScreenFocused}
             isPaused={!isScreenFocused}
             shouldLoop={carouselMedia.length === 1}
+            handleNextPage={handleNextPage}
           />
         );
       }
 
       return (
         <ImageCarouselItem
-          nextPage={handleNextPage}
           uri={item.uri}
           width={width}
           height={height}
+          handleNextPage={handleNextPage}
         />
       );
     },
@@ -380,6 +251,7 @@ export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
       currentIndex,
       isScreenFocused,
       handleVideoEnd,
+      handleNextPage,
       width,
       height,
       carouselMedia.length,
@@ -389,7 +261,6 @@ export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
   // ==================== RENDER ====================
   return (
     <View style={styles.container}>
-      {/* Carrossel em absolute por trás */}
       <View style={styles.carouselContainer}>
         {loading ? (
           <LoadingState />
@@ -417,7 +288,7 @@ export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
                 data={carouselMedia}
                 onProgressChange={progress}
                 onSnapToItem={handleSnapToItem}
-                style={{ width: "100%", height: "100%" }}
+                style={{ width: width, height: height }}
                 renderItem={renderCarouselItem}
                 mode="parallax"
                 modeConfig={{
@@ -430,17 +301,16 @@ export function CarouselTotem({ navigation }: StackRoutesProps<"carousel">) {
         )}
       </View>
 
-      {/* Header por cima do carrossel */}
       <View style={styles.header}>
         <Pressable onPress={() => setTasksModalVisible(true)}>
-          <MaterialIcons name="settings" size={24} color="purple" />
+          <MaterialIcons name="circle" size={16} color="purple" />
         </Pressable>
       </View>
 
       <AdminModal
         visible={tasksModalVisible}
-        password={tasksPassword}
-        onChangePassword={setTasksPassword}
+        password={adminPassword}
+        onChangePassword={setAdminPassword}
         onCancel={handleModalCancel}
         onConfirm={handleAdminAccess}
       />

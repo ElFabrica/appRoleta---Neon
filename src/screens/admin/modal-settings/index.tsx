@@ -1,7 +1,12 @@
 import { View, Text, Pressable, Modal, ScrollView, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { style } from "./style";
-import { ArrowRightIcon, ChevronRight, Check } from "lucide-react-native";
+import {
+  ArrowRightIcon,
+  ChevronRight,
+  Check,
+  Trash2,
+} from "lucide-react-native";
 import { SETTINGS_PAGE, store } from "../../../storge/store";
 
 interface ModalAcessoProps {
@@ -25,7 +30,8 @@ export function ModalConfigurations({
     { id: "home", label: "Home" },
     { id: "form", label: "Formulário" },
     { id: "roullete", label: "Roleta" },
-    { id: "instructions", label: "Instruções" },
+    { id: "carousel", label: "Carrocel" },
+    { id: "SettingsMidia", label: "Configurações de mídia" },
   ];
 
   const [pageConfigs, setPageConfigs] = useState<PageConfig[]>(
@@ -94,6 +100,46 @@ export function ModalConfigurations({
     }
   }, [visible]);
 
+  const handleDeleteAllRoutes = () => {
+    Alert.alert(
+      "Confirmar exclusão",
+      "Tem certeza que deseja deletar todas as configurações de rotas? Esta ação não pode ser desfeita.",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Deletar",
+          style: "destructive",
+          onPress: () => {
+            // Reseta todas as configurações para o padrão (home)
+            const resetConfigs = pages.map((page) => ({
+              id: page.id,
+              label: page.label,
+              toPage: "home",
+            }));
+
+            setPageConfigs(resetConfigs);
+
+            // Remove do storage
+            resetConfigs.forEach((config) => {
+              store.setRow(SETTINGS_PAGE, config.id, {
+                currentPage: config.id,
+                toPage: "home",
+              });
+            });
+
+            Alert.alert(
+              "Rotas deletadas",
+              "Todas as configurações foram resetadas para o padrão"
+            );
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -103,7 +149,21 @@ export function ModalConfigurations({
     >
       <View style={style.Teste}>
         <View style={style.modalBox}>
-          <Text style={style.modalTitle}>Configurações de Direcionamento</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 8,
+            }}
+          >
+            <Text style={style.modalTitle}>
+              Configurações de Direcionamento
+            </Text>
+            <Pressable onPress={handleDeleteAllRoutes} style={{ padding: 8 }}>
+              <Trash2 size={24} color="#ef4444" />
+            </Pressable>
+          </View>
           <Text style={style.subtitleText}>
             Configure qual será a próxima página após cada tela
           </Text>

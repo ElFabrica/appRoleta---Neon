@@ -82,4 +82,10 @@ export const styles = StyleSheet.create({
     fontSize: RFValue(14),
     color: "#333333",
   },
+  header: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
 });
