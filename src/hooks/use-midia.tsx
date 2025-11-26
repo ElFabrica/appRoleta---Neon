@@ -1,5 +1,5 @@
 // @/hooks/use-midia.ts
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import { ITEMS_STORGE_KEY_CAROUSEL } from "@/storge/Midia";
@@ -16,20 +16,34 @@ export interface ICarouselMedia {
 export function useMedia() {
   const [carouselMedia, setCarouselMedia] = useState<ICarouselMedia[]>([]);
   const [loading, setLoading] = useState(false);
+  const isMountedRef = useRef(true); // ✅ Adicionar
 
-  // Carregar mídias do AsyncStorage
+  // ✅ Cleanup ao desmontar o hook
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   const handleLoadingDatas = useCallback(async () => {
+    if (carouselMedia.length !== 0) return;
+
     try {
       setLoading(true);
       const data = await AsyncStorage.getItem(ITEMS_STORGE_KEY_CAROUSEL);
 
+      // ✅ Verificar se ainda está montado
+      if (!isMountedRef.current) return;
+
       if (data) {
         const parsedData: ICarouselMedia[] = JSON.parse(data);
-
-        // Verificar se os arquivos ainda existem
         const validMedia: ICarouselMedia[] = [];
 
         for (const media of parsedData) {
+          // ✅ Verificar em cada iteração
+          if (!isMountedRef.current) break;
+
           try {
             const fileInfo = await FileSystem.getInfoAsync(media.uri);
             if (fileInfo.exists) {
@@ -40,25 +54,33 @@ export function useMedia() {
           }
         }
 
-        setCarouselMedia(validMedia);
+        // ✅ Verificar antes de atualizar estado
+        if (isMountedRef.current) {
+          setCarouselMedia(validMedia);
 
-        // Atualizar storage se alguns arquivos foram removidos
-        if (validMedia.length !== parsedData.length) {
-          await AsyncStorage.setItem(
-            ITEMS_STORGE_KEY_CAROUSEL,
-            JSON.stringify(validMedia)
-          );
+          if (validMedia.length !== parsedData.length) {
+            await AsyncStorage.setItem(
+              ITEMS_STORGE_KEY_CAROUSEL,
+              JSON.stringify(validMedia)
+            );
+          }
         }
       } else {
-        setCarouselMedia([]);
+        if (isMountedRef.current) {
+          setCarouselMedia([]);
+        }
       }
     } catch (error) {
       console.error("Erro ao carregar mídias:", error);
-      setCarouselMedia([]);
+      if (isMountedRef.current) {
+        setCarouselMedia([]);
+      }
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
-  }, []);
+  }, [carouselMedia.length]);
 
   // Salvar mídias no AsyncStorage
   const saveCarouselMedia = useCallback(async (media: ICarouselMedia[]) => {

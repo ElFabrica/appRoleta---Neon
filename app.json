@@ -18,7 +18,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "largeHeap": true,
+        "hardwareAccelerated": true,
+        "softwareKeyboardLayoutMode": "pan"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.AppRoleta"

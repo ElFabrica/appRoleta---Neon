@@ -271,6 +271,33 @@ export function Roullete({ navigation }: StackRoutesProps<"roullete">) {
     return { ...pos, angle };
   };
 
+  // No final do componente Roullete, adicione:
+
+  useEffect(() => {
+    const roulletteId = Math.random().toString(36).substr(2, 9);
+    console.log(`🎰 [ROULLETE-${roulletteId}] Mounted`);
+
+    return () => {
+      console.log(`🗑️ [ROULLETE-${roulletteId}] Unmounting`);
+
+      // ✅ Parar todas as animações
+      rotation.stopAnimation();
+      modalScale.stopAnimation();
+      modalOpacity.stopAnimation();
+      titleScale.stopAnimation();
+      messageOpacity.stopAnimation();
+      buttonScale.stopAnimation();
+      buttonPressScale.stopAnimation();
+
+      // ✅ Resetar estados
+      setShowConfetti(false);
+      setModalVisible(false);
+      setIsSpinning(false);
+
+      console.log(`✅ [ROULLETE-${roulletteId}] Cleanup complete`);
+    };
+  }, []);
+
   return (
     <View style={styles.Container}>
       <LogoAbsolut />

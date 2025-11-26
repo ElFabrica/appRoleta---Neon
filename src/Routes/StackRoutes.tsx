@@ -82,7 +82,7 @@ export function StacksRoutes() {
             options={{
               headerShown: false,
               title: "Carrocel",
-              contentStyle: { backgroundColor: "#333333" },
+              contentStyle: { backgroundColor: "#000000" },
             }}
           />
         </Stack.Navigator>

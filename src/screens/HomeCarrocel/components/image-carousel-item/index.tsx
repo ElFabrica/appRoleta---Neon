@@ -1,4 +1,6 @@
-import { Image, Pressable, View } from "react-native";
+import { Image } from "expo-image";
+import { Pressable } from "react-native";
+import { memo } from "react";
 
 interface ImageCarouselItemProps {
   uri: string;
@@ -7,7 +9,8 @@ interface ImageCarouselItemProps {
   handleNextPage: () => void;
 }
 
-export function ImageCarouselItem({
+// ✅ Memo para evitar re-renders desnecessários
+export const ImageCarouselItem = memo(function ImageCarouselItem({
   uri,
   width,
   height,
@@ -20,9 +23,13 @@ export function ImageCarouselItem({
     >
       <Image
         source={{ uri }}
-        style={{ width: width, height: height }}
-        resizeMode="contain"
+        style={{ width, height }}
+        contentFit="contain"
+        transition={200}
+        cachePolicy="memory-disk"
+        recyclingKey={uri}
+        priority="high"
       />
     </Pressable>
   );
-}
+});
